@@ -1,0 +1,61 @@
+services:
+  db:
+    image: docker.m.daocloud.io/library/postgres:16-alpine
+    environment:
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: app
+      POSTGRES_DB: cncoffset
+    ports:
+      - "54396:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U app -d cncoffset"]
+      interval: 3s
+      timeout: 5s
+      retries: 20
+
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - "8196:8000"
+    environment:
+      POSTGRES_DB: cncoffset
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: app
+      POSTGRES_HOST: db
+      POSTGRES_PORT: "5432"
+      JWT_SECRET: cnc-offset-desk-dev-secret
+      DJANGO_SECRET_KEY: cnc-offset-desk-dev-secret
+    depends_on:
+      db:
+        condition: service_healthy
+
+  worker:
+    build:
+      context: ./backend
+    command: ["python", "desk/worker.py"]
+    environment:
+      POSTGRES_DB: cncoffset
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: app
+      POSTGRES_HOST: db
+      POSTGRES_PORT: "5432"
+      DJANGO_SECRET_KEY: cnc-offset-desk-dev-secret
+    depends_on:
+      db:
+        condition: service_healthy
+      backend:
+        condition: service_started
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "3196:80"
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:
