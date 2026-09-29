@@ -60,3 +60,41 @@ export function createSubmission(tool_code, offset_um) {
     body: JSON.stringify({ tool_code, offset_um: Number(offset_um) }),
   });
 }
+
+export function holdSubmission(id) {
+  return request(`/submissions/${id}/hold`, { method: "POST" });
+}
+
+export function fetchHoldConfig() {
+  return request("/hold-config");
+}
+
+export function updateHoldConfig(max_hold_seconds) {
+  return request("/hold-config", {
+    method: "PUT",
+    body: JSON.stringify({ max_hold_seconds: Number(max_hold_seconds) }),
+  });
+}
+
+export function fetchHolds() {
+  return request("/holds");
+}
+
+export function fetchReclamations() {
+  return request("/reclamations");
+}
+
+export function fetchReconcile() {
+  return request("/holds/reconcile");
+}
+
+export function triggerReclaim() {
+  return request("/holds/reclaim", { method: "POST" });
+}
+
+export function simulateHold(tool_code, offset_um) {
+  return request("/holds/simulate", {
+    method: "POST",
+    body: JSON.stringify({ tool_code, offset_um: Number(offset_um) }),
+  });
+}

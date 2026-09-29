@@ -8,6 +8,7 @@ import {
   login,
   setSession,
 } from "./api";
+import Reclaim from "./Reclaim";
 
 const statusLabel = {
   pending: "待复核",
@@ -24,6 +25,7 @@ function readHash() {
   const raw = (location.hash || "#/").replace(/^#/, "") || "/";
   const m = raw.match(/^\/detail\/(\d+)/);
   if (m) return { name: "detail", id: Number(m[1]) };
+  if (raw === "/reclaim") return { name: "reclaim", id: null };
   return { name: "home", id: null };
 }
 
@@ -150,6 +152,16 @@ function App() {
             >
               复核总览
             </a>
+            <a
+              href="#/reclaim"
+              class={route().name === "reclaim" ? "active" : ""}
+              onClick={(e) => {
+                e.preventDefault();
+                location.hash = "#/reclaim";
+              }}
+            >
+              占位回收台
+            </a>
           </nav>
         </Show>
       </header>
@@ -265,6 +277,10 @@ function App() {
               <p class="hint">暂无记录</p>
             </Show>
           </section>
+        </Show>
+
+        <Show when={route().name === "reclaim"}>
+          <Reclaim user={user()} />
         </Show>
 
         <Show when={route().name === "detail"}>

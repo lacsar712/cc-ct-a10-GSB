@@ -13,7 +13,7 @@ body {
 }
 
 .page {
-  max-width: 960px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 1.5rem;
 }
@@ -142,4 +142,102 @@ td {
 .fail {
   color: #b91c1c;
   font-weight: 600;
+}
+
+/* ---------- 占位回收台 ---------- */
+
+.reclaim-wrap {
+  margin-top: 1rem;
+}
+
+.reclaim-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  align-items: start;
+}
+
+.reclaim-col {
+  margin-top: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  min-width: 0;
+}
+
+.reclaim-col h3 {
+  margin: 0;
+}
+
+.big-num {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0.25rem 0;
+  color: #1e3a8a;
+}
+
+.big-num small {
+  font-size: 0.95rem;
+  font-weight: 400;
+  color: #5a6478;
+}
+
+.badge {
+  font-size: 0.85rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.badge.ok {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.badge.bad {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.scroll-box {
+  max-height: 320px;
+  overflow: auto;
+  border: 1px solid #e5e9f0;
+  border-radius: 8px;
+}
+
+.scroll-box table {
+  margin-top: 0;
+  font-size: 0.85rem;
+}
+
+.scroll-box th,
+.scroll-box td {
+  padding: 0.45rem 0.5rem;
+  white-space: nowrap;
+}
+
+.stuck-form {
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  align-items: end;
+}
+
+.stuck-form button {
+  grid-column: 1 / -1;
+}
+
+button.full {
+  width: 100%;
+  margin-top: 0.4rem;
+}
+
+tr.row-expired td {
+  background: #fef2f2;
+}
+
+@media (max-width: 980px) {
+  .reclaim-grid {
+    grid-template-columns: 1fr;
+  }
 }
