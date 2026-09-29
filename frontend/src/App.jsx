@@ -8,6 +8,7 @@ import {
   login,
   setSession,
 } from "./api";
+import ReclaimView from "./Reclaim";
 
 const statusLabel = {
   pending: "待复核",
@@ -24,6 +25,7 @@ function readHash() {
   const raw = (location.hash || "#/").replace(/^#/, "") || "/";
   const m = raw.match(/^\/detail\/(\d+)/);
   if (m) return { name: "detail", id: Number(m[1]) };
+  if (raw.startsWith("/reclaim")) return { name: "reclaim", id: null };
   return { name: "home", id: null };
 }
 
@@ -150,6 +152,16 @@ function App() {
             >
               复核总览
             </a>
+            <a
+              href="#/reclaim"
+              class={route().name === "reclaim" ? "active" : ""}
+              onClick={(e) => {
+                e.preventDefault();
+                location.hash = "#/reclaim";
+              }}
+            >
+              占位回收台
+            </a>
           </nav>
         </Show>
       </header>
@@ -236,6 +248,7 @@ function App() {
                   <th>刀补 µm</th>
                   <th>状态</th>
                   <th>结论</th>
+                  <th>回收</th>
                   <th>提交时间</th>
                   <th></th>
                 </tr>
@@ -250,6 +263,7 @@ function App() {
                       <td class={row.verdict === "合格" ? "pass" : row.verdict === "超差" ? "fail" : ""}>
                         {row.verdict || "—"}
                       </td>
+                      <td>{row.reclaim_count ? <span class="fail">{row.reclaim_count} 次</span> : "—"}</td>
                       <td>{new Date(row.created_at).toLocaleString()}</td>
                       <td>
                         <button type="button" class="ghost" onClick={() => goDetail(row.id)}>
@@ -290,10 +304,28 @@ function App() {
                     复核时间：
                     {d().reviewed_at ? new Date(d().reviewed_at).toLocaleString() : "—"}
                   </p>
+                  <p>
+                    超时回收次数：
+                    {d().reclaim_count ? (
+                      <span class="fail">{d().reclaim_count} 次</span>
+                    ) : (
+                      "0 次"
+                    )}
+                  </p>
+                  <Show when={d().claimed_at}>
+                    <p class="hint">
+                      当前占位始于 {new Date(d().claimed_at).toLocaleString()}，
+                      适用最长占位 {d().claim_limit_seconds} 秒
+                    </p>
+                  </Show>
                 </div>
               )}
             </Show>
           </section>
+        </Show>
+
+        <Show when={route().name === "reclaim"}>
+          <ReclaimView user={user} />
         </Show>
       </Show>
     </div>

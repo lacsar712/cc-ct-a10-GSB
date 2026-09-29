@@ -60,3 +60,14 @@ export function createSubmission(tool_code, offset_um) {
     body: JSON.stringify({ tool_code, offset_um: Number(offset_um) }),
   });
 }
+
+export function fetchReclaimOverview() {
+  return request("/reclaim/overview");
+}
+
+export function updateHoldLimit(hold_limit_seconds) {
+  return request("/reclaim/hold-limit", {
+    method: "PUT",
+    body: JSON.stringify({ hold_limit_seconds: Number(hold_limit_seconds) }),
+  });
+}
